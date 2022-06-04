@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ncurses.h>
+#include "../include/main.h"
 
 // Defining defaults and memory space for map state
 int cursorlocx=0;
