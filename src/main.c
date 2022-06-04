@@ -1,48 +1,75 @@
+#include <stdio.h>
+#include <string.h>
 #include <ncurses.h>
 
-int cursor_x=0;
-int cursor_y=0;
+// Defining defaults and memory space for map state
+int cursorlocx=0;
+int cursorlocy=0;
+int seed[2000][2000];
+
+void read_file(char file_name[],int MAXWIDTH) {
+	// Set file pointer and character array to store data
+	FILE* fptr;
+	fptr = fopen(file_name, "r");
+	char data[MAXWIDTH];
+
+	if (fptr == NULL) {
+		printf("The file is not opened.");
+	} else {
+		// Read each line
+		while (fgets(data, MAXWIDTH, fptr)) {
+			printw("%s", data);
+		}
+	}
+}
 
 int main() {
 	int ch;
 
-	initscr();              // Start curses mode
-	raw();                  // Disables line buffering
-	keypad(stdscr, TRUE);   // We get F1, F2, etc
-	noecho();               // Don't echo() on getch
+	getch();
+
+    initscr();              /* Start curses mode        */
+    raw();                  /* Line buffering disabled  */
+    keypad(stdscr, TRUE);   /* We get F1, F2 etc..      */
+    noecho();               /* Don't echo() while we do getch */
 
 	int WINDMAXX, WINDMAXY;
 	getmaxyx(stdscr, WINDMAXY, WINDMAXX);
-	move(WINDMAXY/2, WINDMAXX/2);
+	move(WINDMAXY/2-1, WINDMAXX/2-10);
 	printw("(Conway's) Game of Life");
 	move(0,0);
 	getch();
 	clear();
+	read_file("default_seed", WINDMAXX);
+	move(0,0);
+	refresh();
+	getch();
     //ch = getch();           /* If raw() hadn't been called we have to press enter before it * gets to the program      */
 	while ((ch = getch()) != 'q') {
 		switch (ch) {
 			case KEY_UP:
-				cursor_x--;
+				cursorlocx--;
 				break;
 			case KEY_DOWN:
-				cursor_x++;
+				cursorlocx++;
 				break;
 			case KEY_RIGHT:
-				cursor_y++;
+				cursorlocy++;
 				break;
 			case KEY_LEFT:
-				cursor_y--;
+				cursorlocy--;
 				break;
 			case 'x':
-				printw("x");
+				printw("X");
+				//update_seed();
 				refresh();
 				break;
 		}
-		move(cursor_x, cursor_y);
-		refresh();
+		move(cursorlocx, cursorlocy);
+        refresh();
 	}
 
-	endwin();           // End curses mode
+    endwin();           /* End curses mode        */
 
-	return 0;
+    return 0;
 }
