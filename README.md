@@ -5,7 +5,7 @@ A [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway's_Game_of_Life) i
 ![GIF of game of life](./gifs/glider.gif)
 
 ## Build Dependencies
-gcc
+gcc <br />
 ncurses library
 
 ## Installation
