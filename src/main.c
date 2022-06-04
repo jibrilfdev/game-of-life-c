@@ -2,7 +2,6 @@
 #include <string.h>
 #include <ncurses.h>
 #include "../include/main.h"
-
 // Defining defaults and memory space for map state
 int cursor_x=0;
 int cursor_y=0;
@@ -75,9 +74,10 @@ int main() {
 	move(0,0);
 	printw("Seed state saved. Press ENTER to start the simulation.");
 
-	draw_state(WINDMAXY, WINDMAXX);
-	// get_next_state
-	getch();
+	while ((ch = getch()) != 'q') {
+		draw_state(WINDMAXY, WINDMAXX);
+		get_next_state(WINDMAXY, WINDMAXX);
+	}
 
     endwin();           /* End curses mode        */
 
@@ -121,7 +121,7 @@ void read_file(char file_name[],int MAXWIDTH) {
 }
 
 void draw_state(int WINDMAXY, int WINDMAXX) {
-	getch();
+	clear();
 	move(0,0);
 	for (int i=0; i<WINDMAXY; i++) {
 		for (int j=0; j<WINDMAXX; j++) {
@@ -134,5 +134,81 @@ void draw_state(int WINDMAXY, int WINDMAXX) {
 	}
 	curs_set(0);
 	refresh();
+}
 
+void get_next_state(int WINDMAXY, int WINDMAXX) {
+	for (int i=0; i<WINDMAXY; ++i) {
+		for (int j=0; j<WINDMAXX; ++j) {
+			current_state[i][j]=0;
+		}
+	}
+
+	for (int i=0; i<WINDMAXY; i++) {
+		for (int j=0; j<WINDMAXX; j++) {
+			int total=0;
+			if (i>0&&j>0) {
+				if (seed[i-1][j-1]==1) {
+					total++;
+				}
+			}
+			if (i>0) {
+				if (seed[i-1][j]==1) {
+					total++;
+				}
+			}
+			if (i>0&&j<WINDMAXX-1) {
+				if (seed[i-1][j+1]==1) {
+					total++;
+				}
+			}
+			if (j>0) {
+				if (seed[i][j-1]==1) {
+					total++;
+				}
+			}
+			if (j<WINDMAXX-1) {
+				if (seed[i][j+1]==1) {
+					total++;
+				}
+			}
+			if (i<WINDMAXY-1&&j>0) {
+				if (seed[i+1][j-1]==1) {
+					total++;
+				}
+			}
+			if (i<WINDMAXY-1) {
+				if (seed[i+1][j]==1) {
+					total++;
+				}
+			}
+			if (i<WINDMAXY-1&&j<WINDMAXX) {
+				if (seed[i+1][j+1]==1) {
+					total++;
+				}
+			}
+			if (seed[i][j]==1) {
+				if (total<2) {
+					current_state[i][j]=0;
+				}
+				if (total==2||total==3) {
+					current_state[i][j]=1;
+				}
+				if (total>3) {
+					current_state[i][j]=0;
+				}
+			} else {
+				if (total==3) {
+					current_state[i][j]=1;
+				}
+			}
+		}
+	}
+
+	for (int i=0; i<WINDMAXY; ++i) {
+		for (int j=0; j<WINDMAXX; ++j) {
+			seed[i][j]=current_state[i][j];
+		}
+	}
+
+	curs_set(0);
 }

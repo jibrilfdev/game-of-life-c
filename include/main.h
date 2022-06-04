@@ -14,3 +14,11 @@ void read_file(char file_name[],int MAXWIDTH);
 * Draws game state onto ncurses window
 * */
 void draw_state(int WINDMAXY, int WINDMAXX);
+
+/* get_next_state
+*
+*
+* Simulates next game state based on predefined rules
+*
+* */
+void get_next_state(int WINDMAXY, int WINDMAXX);
